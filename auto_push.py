@@ -61,6 +61,12 @@ def save_next_index(index):
 # =============================
 # MAIN DAILY PUSH FUNCTION
 # =============================
+def update_daily_log():
+    log_file = os.path.join(LOCAL_REPO_PATH, "daily_log.txt")
+
+    with open(log_file, "a", encoding="utf-8") as f:
+        f.write(f"Auto update: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+
 def push_one_practical():
     print(f"\n[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Starting staged push...")
 
@@ -69,6 +75,12 @@ def push_one_practical():
         return
 
     os.chdir(LOCAL_REPO_PATH)
+
+    # Create a small daily change for GitHub activity
+    update_daily_log()
+    run_command("git add daily_log.txt")
+    run_command('git commit -m "Daily activity update"')
+    run_command("git push origin main")
 
     index = get_next_index()
 
@@ -80,25 +92,24 @@ def push_one_practical():
     print(f"Pushing folder: {folder}")
 
     # Add only one folder + README + tracker
-    run_command(f'git add "{folder}" README.md')
+    run_command(f'git add "{folder}" README.md push_tracker.txt')
+
     commit_message = f"Add {folder}"
     committed = run_command(f'git commit -m "{commit_message}"')
 
     if not committed:
-       if not committed:
         print("Nothing new to commit or commit failed.")
         return
 
     pushed = run_command("git push origin main")
 
     if pushed:
-        save_next_index(index + 1)
-        run_command("git add push_tracker.txt")
-        run_command('git commit -m "Update tracker for next push"')
-        run_command("git push origin main")
         print(f"Successfully pushed: {folder}")
+        save_next_index(index + 1)
     else:
         print("Push failed.")
+
+
 # =============================
 # SCHEDULER
 # =============================

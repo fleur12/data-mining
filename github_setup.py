@@ -55,4 +55,4 @@ for cmd in commands:
 
 print("\n🎉 GitHub connection setup complete!")
 print("Now run: python auto_push.py")
-print(f"Repository: https://github.com/{GITHUB_USERNAME}/{REPO_NAME}")
+print(f"Repository: https://github.com/{GITHUB_USERNAME}/{REPO_NAME}")s
